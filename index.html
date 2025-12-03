@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AMS SUPPLY</title>
+<style>
+  body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 20px;
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+
+  /* Product Grid */
+  .product-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 20px;
+    flex-grow: 1;
+  }
+
+  /* Product Box */
+  .product {
+    width: 280px;
+    transition: transform 0.25s ease;
+  }
+
+  /* Hover Scale */
+  .product:hover {
+    transform: scale(1.08);
+  }
+
+  /* Full Images */
+  .product img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: contain;
+  }
+
+  /* Price */
+  .price {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+
+  /* Round Buttons */
+  button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  button:hover {
+    opacity: 0.75;
+  }
+
+  /* Cart Icon */
+  .cart {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 35px;
+    cursor: pointer;
+    user-select: none;
+    z-index: 1500;
+  }
+
+  /* Modal Background */
+  #modalBg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 10px;
+  }
+
+  /* Modal */
+  #modal {
+    background: white;
+    padding: 20px;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 10px;
+    text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  #modal img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: contain;
+  }
+
+  /* Size Buttons */
+  #sizeBtns {
+    margin: 15px 0;
+  }
+  #sizeBtns button {
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: 1.5px solid #ccc;
+    background: white;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 45px;
+  }
+  #sizeBtns button.selected {
+    background: black;
+    color: white;
+    border-color: black;
+  }
+
+  /* Cart Drawer */
+  #cartDrawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100%;
+    background: white;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    transform: translateX(110%);
+    transition: transform 0.3s ease;
+    z-index: 1100;
+    overflow-y: auto;
+  }
+  #cartDrawer.open {
+    transform: translateX(0);
+  }
+
+  #cartDrawer h2 {
+    margin-top: 0;
+  }
+
+  .cart-item {
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    text-align: left;
+    font-size: 16px;
+  }
+
+  .cart-item strong {
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  #totalPrice {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 20px;
+  }
+
+  #closeModalBtn, #closeCartBtn, #clearCartBtn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border-radius: 30px;
+  }
+
+  /* Contact Section */
+  footer {
+    background: #000;
+    color: #fff;
+    padding: 15px 20px;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .product-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+      padding: 15px;
+    }
+
+    .product {
+      width: 90vw;
+      max-width: 320px;
+    }
+
+    header {
+      font-size: 32px;
+      padding: 15px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 14px 30px;
+    }
+
+    #cartDrawer {
+      width: 100vw;
+    }
+
+    #cartDrawer.open {
+      transform: translateX(0);
+    }
+
+    footer {
+      font-size: 16px;
+      padding: 12px 15px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>AMS SUPPLY</header>
+
+<div class="cart" id="cartIcon" title="View Cart">🛒 (<span id="cartCount">0</span>)</div>
+
+<div class="product-container" id="productGrid">
+  <!-- Products will load here -->
+</div>
+
+<!-- Modal -->
+<div id="modalBg">
+  <div id="modal">
+    <img id="modalImg" src="" alt="Product Image" />
+    <h2 id="modalName"></h2>
+    <div class="price" id="modalPrice"></div>
+
+    <div id="sizeBtns"></div>
+
+    <button id="addToCartBtn">Add to Cart</button>
+    <br />
+    <button id="closeModalBtn">Close</button>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<div id="cartDrawer">
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <div id="totalPrice">Total: $0</div>
+  <button id="clearCartBtn">Clear Cart</button><br/>
+  <button id="closeCartBtn">Close</button>
+</div>
+
+<footer>
+  CONTACT: <a href="mailto:amsfashion2025@gmail.com" style="color: #fff; text-decoration: underline;">amsfashion2025@gmail.com</a> to order
+</footer>
+
+<script>
+  // Products data
+  const PRODUCTS = [
+    { id: '1', name: 'AMS HOODIE 1', price: 30, image: 'szn1white.jpg' },
+    { id: '2', name: 'AMS HOODIE 2', price: 30, image: 'szn1black.jpg' },
+    { id: '3', name: 'T SHIRT 1', price: 20, image: 'shirtblack.jpg' },
+  ];
+
+  const productGrid = document.getElementById('productGrid');
+  const modalBg = document.getElementById('modalBg');
+  const modalImg = document.getElementById('modalImg');
+  const modalName = document.getElementById('modalName');
+  const modalPrice = document.getElementById('modalPrice');
+  const sizeBtns = document.getElementById('sizeBtns');
+  const addToCartBtn = document.getElementById('addToCartBtn');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const cartIcon = document.getElementById('cartIcon');
+  const cartDrawer = document.getElementById('cartDrawer');
+  const cartItemsDiv = document.getElementById('cartItems');
+  const totalPriceDiv = document.getElementById('totalPrice');
+  const clearCartBtn = document.getElementById('clearCartBtn');
+  const closeCartBtn = document.getElementById('closeCartBtn');
+  const cartCountSpan = document.getElementById('cartCount');
+
+  let currentProduct = null;
+  let selectedSize = null;
+  let CART = [];
+
+  // Render products grid
+  PRODUCTS.forEach(product => {
+    const prodDiv = document.createElement('div');
+    prodDiv.classList.add('product');
+    prodDiv.innerHTML = `
+      <img src="${product.image}" alt="${product.name}" />
+      <div class="price">$${product.price}</div>
+      <button>View Product</button>
+    `;
+    prodDiv.querySelector('button').addEventListener('click', () => openModal(product));
+    productGrid.appendChild(prodDiv);
+  });
+
+  // Open modal with product info
+  function openModal(product) {
+    currentProduct = product;
+    selectedSize = null;
+
+    modalImg.src = product.image;
+    modalName.textContent = product.name;
+    modalPrice.textContent = `$${product.price}`;
+
+    // Clear and create size buttons
+    sizeBtns.innerHTML = '';
+    ['XS','S','M','L','XL'].forEach(size => {
+      const btn = document.createElement('button');
+      btn.textContent = size;
+      btn.addEventListener('click', () => {
+        selectedSize = size;
+        // Highlight selected button
+        Array.from(sizeBtns.children).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+      sizeBtns.appendChild(btn);
+    });
+
+    modalBg.style.display = 'flex';
+  }
+
+  // Close modal
+  closeModalBtn.addEventListener('click', () => {
+    modalBg.style.display = 'none';
+  });
+
+  // Add to cart button
+  addToCartBtn.addEventListener('click', () => {
+    if (!selectedSize) {
+      alert('Please select a size!');
+      return;
+    }
+    CART.push({
+      id: currentProduct.id,
+      name: currentProduct.name,
+      price: currentProduct.price,
+      size: selectedSize,
+      image: currentProduct.image,
+    });
+    updateCartUI();
+    modalBg.style.display = 'none';
+    openCartDrawer();
+  });
+
+  // Update cart UI
+  function updateCartUI() {
+    cartItemsDiv.innerHTML = '';
+    let total = 0;
+    CART.forEach((item, idx) => {
+      total += item.price;
+      const div = document.createElement('div');
+      div.classList.add('cart-item');
+      div.innerHTML = `
+        <strong>${item.name}</strong> (${item.size}) - $${item.price}
+        <button onclick="removeFromCart(${idx})" style="float:right; background:none; border:none; color:red; cursor:pointer;">✕</button>
+      `;
+      cartItemsDiv.appendChild(div);
+    });
+    totalPriceDiv.textContent = `Total: $${total}`;
+    cartCountSpan.textContent = CART.length;
+  }
+
+  // Remove item from cart
+  window.removeFromCart = function(index) {
+    CART.splice(index, 1);
+    updateCartUI();
+  }
+
+  // Cart icon click opens drawer
+  cartIcon.addEventListener('click', openCartDrawer);
+  closeCartBtn.addEventListener('click', closeCartDrawer);
+  clearCartBtn.addEventListener('click', () => {
+    CART = [];
+    updateCartUI();
+  });
+
+  function openCartDrawer() {
+    cartDrawer.classList.add('open');
+  }
+
+  function closeCartDrawer() {
+    cartDrawer.classList.remove('open');
+  }
+</script>
+
+</body>
+</html>
