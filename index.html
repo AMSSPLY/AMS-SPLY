@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AMS SUPPLY</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: #d0d0d0;
+    color: #111;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    padding: 40px 20px 20px;
+    user-select: none;
+  }
+  /* Toggle Container */
+  .toggle-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    z-index: 1000;
+  }
+  .toggle-label {
+    font-weight: 600;
+    color: #222;
+  }
+  /* Toggle Switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    border-radius: 26px;
+    top: 0; left: 0; right: 0; bottom: 0;
+    transition: 0.4s;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px; width: 20px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+  }
+  input:checked + .slider {
+    background-color: #4da6ff;
+  }
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+  /* Cart Button */
+  #cartBtn {
+    position: fixed;
+    top: 20px; right: 20px;
+    background: white;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    font-size: 26px;
+    line-height: 48px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  #cartCount {
+    position: absolute;
+    top: 4px; right: 4px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  /* Product Grid */
+  .product-grid {
+    margin-top: 110px;
+    width: 90%;
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 36px;
+  }
+  .product {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+  }
+  .product:hover, .product:focus {
+    outline: none;
+    transform: scale(1.05);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+  }
+  .product img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  .product-name {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .product-price {
+    font-weight: 600;
+    font-size: 18px;
+    color: #444;
+  }
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal {
+    background: white;
+    border-radius: 14px;
+    padding: 28px 32px 32px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    position: relative;
+    text-align: left;
+  }
+  .close-btn {
+    position: absolute;
+    top: 12px; right: 16px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+    cursor: pointer;
+    user-select: none;
+  }
+  .modal img {
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 18px;
+  }
+  .modal h2 {
+    margin: 0 0 14px 0;
+    font-weight: 800;
+    font-size: 24px;
+    color: #111;
+    text-align: center;
+  }
+  .modal .price {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+  .sizes {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 30px;
+    justify-content: center;
+  }
+  .sizes button {
+    padding: 10px 18px;
+    border-radius: 22px;
+    border: 2px solid #444;
+    background: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    flex-grow: 1;
+    text-align: center;
+    max-width: 60px;
+  }
+  .sizes button.selected {
+    background: #222;
+    color: white;
+    border-color: #222;
+  }
+  .sizes button:hover:not(.selected) {
+    border-color: #000;
+  }
+  .add-to-cart-btn {
+    display: block;
+    width: 100%;
+    background: #222;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 14px 0;
+    border-radius: 28px;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease;
+  }
+  .add-to-cart-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+  .add-to-cart-btn:hover:not(:disabled) {
+    background: #000;
+  }
+  /* Cart Modal */
+  #cartModal .modal {
+    max-width: 460px;
+  }
+  #cartModal .cart-items {
+    max-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  .cart-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+  .cart-item img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  }
+  .cart-item-info {
+    flex-grow: 1;
+  }
+  .cart-item-name {
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .cart-item-size {
+    font-size: 14px;
+    color: #666;
+    margin-top: 2px;
+  }
+  .cart-item-price {
+    font-weight: 600;
+    font-size: 16px;
+    margin-left: 12px;
+  }
+  .remove-btn {
+    background: transparent;
+    border: none;
+    color: #c00;
+    font-weight: 700;
+    font-size: 22px;
+    cursor: pointer;
+    user-select: none;
+    padding: 0 6px;
+    transition: color 0.2s ease;
+  }
+  .remove-btn:hover {
+    color: #800;
+  }
+  #cartModal .cart-total {
+    font-weight: 800;
+    font-size: 22px;
+    text-align: right;
+    margin-bottom: 24px;
+  }
+  #cartModal .contact {
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+    border-top: 1px solid #ddd;
+    padding-top: 14px;
+  }
+  /* Footer */
+  footer {
+    margin-top: auto;
+    background: #222;
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding: 12px 0;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    user-select: none;
+  }
+  /* Responsive */
+  @media (max-width: 600px) {
+    header {
+      font-size: 2.2rem;
+      padding-top: 30px;
+    }
+    .product-grid {
+      gap: 20px;
+      margin-top: 90px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header id="siteTitle">AMS SUPPLY</header>
+
+<div class="toggle-container" aria-label="Toggle luxury products background">
+  <label class="toggle-label" for="luxuryToggle">Luxury</label>
+  <label class="switch" aria-checked="false" role="switch">
+    <input type="checkbox" id="luxuryToggle" aria-labelledby="luxuryToggleLabel" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<button id="cartBtn" aria-label="Open shopping cart">
+  🛒
+  <div id="cartCount" aria-live="polite"></div>
+</button>
+
+<div class="product-grid" id="productGrid" aria-live="polite" aria-relevant="additions removals">
+  <!-- Products will be inserted here by JS -->
+</div>
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+  <div class="modal">
+    <button class="close-btn" aria-label="Close product details">&times;</button>
+    <img src="" alt="" id="modalImg" />
+    <h2 id="modalTitle"></h2>
+    <div class="price" id="modalPrice"></div>
+    <div class="sizes" role="radiogroup" aria-label="Select size">
+      <button role="radio" aria-checked="false" tabindex="0">S</button>
+      <button role="radio" aria-checked="false" tabindex="-1">M</button>
+      <button role="radio" aria-checked="false" tabindex="-1">L</button>
+      <button role="radio" aria-checked="false" tabindex="-1">XL</button>
+    </div>
+    <button class="add-to-cart-btn" disabled>Add to Cart</button>
+  </div>
+</div>
+
+<!-- Cart Modal -->
+<div class="modal-overlay" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle" tabindex="-1">
+  <div class="modal">
+    <button class="close-btn" aria-label="Close cart">&times;</button>
+    <h2 id="cartModalTitle">Your Cart</h2>
+    <div class="cart-items"></div>
+    <div class="cart-total"></div>
+    <div class="contact">CONTACT: <a href="mailto:amsfashion2025@gmail.com" style="color:#111;text-decoration:none;">amsfashion2025@gmail.com</a> to order</div>
+  </div>
+</div>
+
+<footer>©️ AMS SUPPLY. ALL RIGHTS RESERVED.</footer><script>
+  // PRODUCT DATA
+  const products = [
+    // Regular products (gray bg)
+    { id: 1, name: "AMS HOODIE 1", price: 30, img: "szn1white.jpg", category: "regular" },
+    { id: 2, name: "AMS HOODIE 2", price: 30, img: "szn1black.jpg", category: "regular" },
+    { id: 3, name: "T SHIRT 1", price: 20, img: "shirtblack.jpg", category: "regular" },
+    { id: 4, name: "AMS HOODIE 3", price: 30, img: "amshoodie4.jpg", category: "regular" },
+    { id: 5, name: "ZIP UP HOODIE 1", price: 40, img: "zipup1.jpg", category: "regular" },
+    { id: 6, name: "T SHIRT 2", price: 30, img: "tshirt2.jpg", category: "regular" },
+    { id: 7, name: "T SHIRT 3", price: 30, img: "tshirt3.jpg", category: "regular" },
+    { id: 8, name: "SWEATSHIRT 1", price: 40, img: "sweatshirt1.jpg", category: "regular" },
+    { id: 9, name: "AMS HOODIE 4", price: 30, img: "logohoodie1.jpg", category: "regular" },
+    { id: 10, name: "AMS HOODIE 5", price: 30, img: "logohoodie2.jpg", category: "regular" },
+    { id: 11, name: "AMS HOODIE 6", price: 30, img: "logohoodie3.jpg", category: "regular" },
+    { id: 12, name: "AMS HOODIE 7", price: 30, img: "logohoodie4.jpg", category: "regular" },
+    // Luxury products (baby blue bg)
+    { id: 101, name: "Luxury Hoodie 1", price: 50, img: "luxuryhoodie1.jpg", category: "luxury" },
+    { id: 102, name: "Luxury Polo 1", price: 50, img: "luxurypolo1.jpg", category: "luxury" },
+    { id: 103, name: "Luxury Hoodie 2", price: 50, img: "luxuryhoodie2.jpg", category: "luxury" },
+    { id: 104, name: "Luxury Polo 2", price: 50, img: "luxurypolo2.jpg", category: "luxury" },
+    { id: 105, name: "Luxury Hoodie 3", price: 50, img: "luxuryhoodie3.jpg", category: "luxury" },
+    { id: 106, name: "Luxury Polo 3", price: 50, img: "luxurypolo3.jpg", category: "luxury" },
+    { id: 107, name: "Luxury Hoodie 4", price: 50, img: "luxuryhoodie4.jpg", category: "luxury" },
+    { id: 108, name: "Luxury Polo 4", price: 50, img: "luxurypolo4.jpg", category: "luxury" },
+    { id: 109, name: "Luxury Hoodie 5", price: 50, img: "luxuryhoodie5.jpg", category: "luxury" },
+    { id: 110, name: "Fur Hoodie 1", price: 70, img: "furhoodie1.jpg", category: "luxury" }
+  ];
+
+  // SIZES (no XS as requested)
+  const sizes = ["S", "M", "L", "XL"];
+
+  // State variables
+  let isLuxury = false;
+  let cart = [];
+  let selectedProduct = null;
+  let selectedSize = null;
+
+  // DOM references
+  const productGrid = document.getElementById("productGrid");
+  const luxuryToggle = document.getElementById("luxuryToggle");
+  const body = document.body;
+  const siteTitle = document.getElementById("siteTitle");
+
+  const productModal = document.getElementById("productModal");
+  const modalImg = document.getElementById("modalImg");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalPrice = document.getElementById("modalPrice");
+  const sizeButtons = productModal.querySelectorAll(".sizes button");
+  const addToCartBtn = productModal.querySelector(".add-to-cart-btn");
+  const productModalCloseBtn = productModal.querySelector(".close-btn");
+
+  const cartBtn = document.getElementById("cartBtn");
+  const cartCount = document.getElementById("cartCount");
+  const cartModal = document.getElementById("cartModal");
+  const cartModalCloseBtn = cartModal.querySelector(".close-btn");
+  const cartItemsContainer = cartModal.querySelector(".cart-items");
+  const cartTotal = cartModal.querySelector(".cart-total");
+
+  // FUNCTIONS
+
+  // Render products based on toggle
+  function renderProducts() {
+    productGrid.innerHTML = "";
+    const filteredProducts = products.filter(p => isLuxury ? p.category === "luxury" : p.category === "regular");
+
+    filteredProducts.forEach(product => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.tabIndex = 0;
+      div.setAttribute("role", "button");
+      div.setAttribute("aria-pressed", "false");
+      div.setAttribute("aria-label", `${product.name}, $${product.price}. Click for details.`);
+
+      div.innerHTML = `
+        <img src="${product.img}" alt="${product.name}" />
+        <div class="product-name">${product.name}</div>
+        <div class="product-price">$${product.price}</div>
+      `;
+
+      div.addEventListener("click", () => openProductModal(product));
+      div.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openProductModal(product);
+        }
+      });
+
+      productGrid.appendChild(div);
+    });
+  }
+
+  // Open product modal and populate info
+  function openProductModal(product) {
+    selectedProduct = product;
+    selectedSize = null;
+    modalImg.src = product.img;
+    modalImg.alt = product.name;
+    modalTitle.textContent = product.name;
+    modalPrice.textContent = `$${product.price}`;
+
+    sizeButtons.forEach(btn => {
+      btn.classList.remove("selected");
+      btn.setAttribute("aria-checked", "false");
+      btn.tabIndex = -1;
+    });
+    sizeButtons[0].tabIndex = 0; // focusable first size
+    addToCartBtn.disabled = true;
+
+    productModal.classList.add("active");
+    productModal.focus();
+  }
+
+  // Close product modal
+  function closeProductModal() {
+    productModal.classList.remove("active");
+    selectedProduct = null;
+    selectedSize = null;
+  }
+
+  // Handle size selection in product modal
+  sizeButtons.forEach((btn, index) => {
+    btn.addEventListener("click", () => {
+      sizeButtons.forEach(b => {
+        b.classList.remove("selected");
+        b.setAttribute("aria-checked", "false");
+      });
+      btn.classList.add("selected");
+      btn.setAttribute("aria-checked", "true");
+      selectedSize = btn.textContent;
+      addToCartBtn.disabled = false;
+    });
+    btn.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        const next = (index + 1) % sizeButtons.length;
+        sizeButtons[next].focus();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        const prev = (index - 1 + sizeButtons.length) % sizeButtons.length;
+        sizeButtons[prev].focus();
+      }
+    });
+  });
+
+  // Add to cart button click handler
+  addToCartBtn.addEventListener("click", () => {
+    if (!selectedProduct || !selectedSize) return;
+
+    // Check if product with same size exists in cart
+    const existing = cart.find(item => item.id === selectedProduct.id && item.size === selectedSize);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({ ...selectedProduct, size: selectedSize, quantity: 1 });
+    }
+    updateCartCount();
+    closeProductModal();
+  });
+
+  // Update cart count bubble
+  function updateCartCount() {
+    const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+    if (totalItems > 0) {
+      cartCount.style.display = "flex";
+      cartCount.textContent = totalItems;
+    } else {
+      cartCount.style.display = "none";
+      cartCount.textContent = "";
+    }
+  }
+
+  // Open cart modal and show cart items
+  function openCartModal() {
+    renderCartItems();
+    cartModal.classList.add("active");
+    cartModal.focus();
+  }
+
+  // Close cart modal
+  function closeCartModal() {
+    cartModal.classList.remove("active");
+  }
+
+  // Render cart items in cart modal
+  function renderCartItems() {
+    cartItemsContainer.innerHTML = "";
+    if (cart.length === 0) {
+      cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+      cartTotal.textContent = "";
+      return;
+    }
+
+    cart.forEach((item, idx) => {
+      const div = document.createElement("div");
+      div.className = "cart-item";
+
+      div.innerHTML = `
+        <img src="${item.img}" alt="${item.name}" />
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-size">Size: ${item.size}</div>
+          <div>Qty: ${item.quantity}</div>
+        </div>
+        <div class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+        <button class="remove-btn" aria-label="Remove one ${item.name} size ${item.size} from cart">&times;</button>
+      `;
+
+      // Remove button handler
+      div.querySelector(".remove-btn").addEventListener("click", () => {
+        if (item.quantity > 1) {
+          item.quantity--;
+        } else {
+          cart.splice(idx, 1);
+        }
+        updateCartCount();
+        renderCartItems();
+      });
+
+      cartItemsContainer.appendChild(div);
+    });
+
+    const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    cartTotal.textContent = `Total: $${totalPrice.toFixed(2)}`;
+  }
+
+  // Toggle luxury mode background and products
+  luxuryToggle.addEventListener("change", () => {
+    isLuxury = luxuryToggle.checked;
+    body.style.backgroundColor = isLuxury ? "#cce6ff" : "#d0d0d0";
+    renderProducts();
+  });
+
+  // Close modals on clicking close buttons or outside modal content
+  productModalCloseBtn.addEventListener("click", closeProductModal);
+  cartModalCloseBtn.addEventListener("click", closeCartModal);
+
+  productModal.addEventListener("click", e => {
+    if (e.target === productModal) closeProductModal();
+  });
+  cartModal.addEventListener("click", e => {
+    if (e.target === cartModal) closeCartModal();
+  });
+
+  // Open cart modal on cart button click
+  cartBtn.addEventListener("click", openCartModal);
+
+  // Close modals on Escape key
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") {
+      if (productModal.classList.contains("active")) closeProductModal();
+      if (cartModal.classList.contains("active")) closeCartModal();
+    }
+  });
+
+  // Initial render
+  renderProducts();
+  updateCartCount();
+</script>
+</body>
+</html>
