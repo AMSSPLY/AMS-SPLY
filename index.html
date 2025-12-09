@@ -1,0 +1,157 @@
+<!-- Basic minimalistic AMS site inspired by Yeezy.com -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMS Supply</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: white;
+      color: black;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      font-size: 20px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .switch {
+      position: relative;
+      width: 42px;
+      height: 22px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #ccc;
+      border-radius: 34px;
+      transition: 0.3s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    input:checked + .slider {
+      background: #89c6ff;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      padding: 40px;
+    }
+
+    .item img {
+      width: 100%;
+      display: block;
+    }
+
+    .item {
+      text-align: center;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>AMS SUPPLY</div>
+  <div class="toggle">
+    <span>Luxury</span>
+    <label class="switch">
+      <input type="checkbox" id="luxToggle" />
+      <span class="slider"></span>
+    </label>
+  </div>
+</header>
+
+<div class="products" id="productGrid"></div>
+
+<script>
+  const regularProducts = [
+    { name: "Hoodie 1", img: "hoodie1.jpg" },
+    { name: "Hoodie 2", img: "hoodie2.jpg" },
+    { name: "Hoodie 3", img: "hoodie3.jpg" },
+    { name: "T-Shirt 1", img: "tshirt1.jpg" },
+    { name: "Zip Up", img: "zipup1.jpg" },
+    { name: "Sweatshirt", img: "sweatshirt1.jpg" }
+  ];
+
+  const luxuryProducts = [
+    { name: "Luxury Hoodie 1", img: "luxuryhoodie1.jpg" },
+    { name: "Luxury Polo 1", img: "luxurypolo1.jpg" },
+    { name: "Luxury Hoodie 2", img: "luxuryhoodie2.jpg" },
+    { name: "Luxury Polo 2", img: "luxurypolo2.jpg" },
+    { name: "Luxury Hoodie 3", img: "luxuryhoodie3.jpg" },
+    { name: "Luxury Polo 3", img: "luxurypolo3.jpg" },
+    { name: "Luxury Hoodie 4", img: "luxuryhoodie4.jpg" },
+    { name: "Luxury Polo 4", img: "luxurypolo4.jpg" },
+    { name: "Luxury Hoodie 5", img: "luxuryhoodie5.jpg" },
+    { name: "Fur Hoodie", img: "furhoodie1.jpg" }
+  ];
+
+  const grid = document.getElementById("productGrid");
+  const toggle = document.getElementById("luxToggle");
+
+  function render(products) {
+    grid.innerHTML = products
+      .map(p => `
+        <div class="item">
+          <img src="${p.img}" alt="${p.name}" />
+          <div>${p.name}</div>
+        </div>
+      `)
+      .join("");
+  }
+
+  toggle.addEventListener("change", () => {
+    if (toggle.checked) {
+      document.body.style.background = "#cfe8ff";
+      render(luxuryProducts);
+    } else {
+      document.body.style.background = "white";
+      render(regularProducts);
+    }
+  });
+
+  render(regularProducts);
+</script>
+
+</body>
+</html>
