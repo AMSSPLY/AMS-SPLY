@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AMS SUPPLY</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #f1f1f1;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #000;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 40px;
+}
+
+.logo {
+    font-size: 26px;
+    letter-spacing: 6px;
+    font-weight: 600;
+}
+
+.cart-icon {
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: black;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 40px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* PRODUCT CARD */
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.04);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 14px;
+}
+
+.name {
+    margin-top: 14px;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.price {
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+/* PRODUCT PAGE */
+.product {
+    max-width: 900px;
+    margin: auto;
+    padding: 40px;
+    text-align: center;
+}
+
+.product img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+}
+
+.sizes button {
+    margin: 8px;
+    padding: 12px 22px;
+    border: 1px solid black;
+    background: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sizes button.active {
+    background: black;
+    color: white;
+}
+
+.add {
+    margin-top: 25px;
+    padding: 14px 50px;
+    background: black;
+    color: white;
+    border: none;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+/* CART */
+.cart {
+    max-width: 600px;
+    margin: auto;
+    padding: 40px;
+    text-align: center;
+}
+
+.cart-item {
+    margin: 15px 0;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.email {
+    margin-top: 30px;
+    font-weight: 600;
+}
+
+.clear {
+    margin-top: 20px;
+    padding: 10px 30px;
+    background: none;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+/* BACK */
+.back {
+    margin-top: 30px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">AMS SUPPLY</div>
+    <div class="cart-icon" onclick="loadCart()">
+        🛒
+        <div class="cart-count" id="count">0</div>
+    </div>
+</header>
+
+<div id="app"></div>
+
+<script>
+const products = [
+    { id: 1, name: "AMS HOODIE 1", img: "hoodie1.jpg" },
+    { id: 2, name: "AMS HOODIE 2", img: "hoodie2.jpg" },
+    { id: 3, name: "AMS HOODIE 3", img: "hoodie3.jpg" },
+    { id: 4, name: "AMS HOODIE 4", img: "hoodie4.jpg" },
+    { id: 5, name: "AMS HOODIE 5", img: "hoodie5.jpg" },
+    { id: 6, name: "AMS HOODIE 6", img: "hoodie6.jpg" }
+];
+
+let cart = [];
+let selectedSize = null;
+
+const app = document.getElementById("app");
+const count = document.getElementById("count");
+
+function updateCount() {
+    count.innerText = cart.length;
+}
+
+/* HOME */
+function loadHome() {
+    let html = `<div class="grid">`;
+
+    products.forEach(p => {
+        html += `
+            <div class="card" onclick="loadProduct(${p.id})">
+                <img src="${p.img}">
+                <div class="name">${p.name}</div>
+                <div class="price">$30</div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    app.innerHTML = html;
+}
+
+/* PRODUCT */
+function loadProduct(id) {
+    selectedSize = null;
+    const p = products.find(x => x.id === id);
+
+    app.innerHTML = `
+        <div class="product">
+            <img src="${p.img}">
+            <h2>${p.name}</h2>
+            <p>$30</p>
+
+            <div class="sizes">
+                <button onclick="selectSize(this,'S')">S</button>
+                <button onclick="selectSize(this,'M')">M</button>
+                <button onclick="selectSize(this,'L')">L</button>
+                <button onclick="selectSize(this,'XL')">XL</button>
+            </div>
+
+            <button class="add" onclick="addToCart('${p.name}')">
+                ADD TO CART
+            </button>
+
+            <div class="back" onclick="loadHome()">← BACK</div>
+        </div>
+    `;
+}
+
+/* SIZE SELECT */
+function selectSize(btn, size) {
+    selectedSize = size;
+    document.querySelectorAll(".sizes button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+}
+
+/* CART */
+function addToCart(name) {
+    if (!selectedSize) {
+        alert("Please select a size.");
+        return;
+    }
+
+    cart.push({ name, size: selectedSize });
+    updateCount();
+}
+
+/* CART PAGE */
+function loadCart() {
+    let html = `<div class="cart"><h2>CART</h2>`;
+
+    if (cart.length === 0) {
+        html += `<p>Your cart is empty.</p>`;
+    } else {
+        cart.forEach(item => {
+            html += `<div class="cart-item">${item.name} — Size ${item.size} — $30</div>`;
+        });
+    }
+
+    html += `
+        <div class="email">
+            Contact us at:<br>
+            amsfashion2025@gmail.com
+        </div>
+
+        <button class="clear" onclick="clearCart()">CLEAR CART</button>
+
+        <div class="back" onclick="loadHome()">← BACK TO SHOP</div>
+    </div>`;
+
+    app.innerHTML = html;
+}
+
+/* CLEAR CART */
+function clearCart() {
+    cart = [];
+    updateCount();
+    loadCart();
+}
+
+loadHome();
+</script>
+
+</body>
+</html>
