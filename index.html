@@ -1,295 +1,395 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8">
-<title>AMS SUPPLY</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AMS SUPPLY</title>
 
-<style>
-* { box-sizing: border-box; }
+  <!-- IBM Plex Mono font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap"
+    rel="stylesheet"
+  />
 
-body {
-    margin: 0;
-    background: #f1f1f1;
-    font-family: Helvetica, Arial, sans-serif;
-    color: #000;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-/* HEADER */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 40px;
-}
+    body {
+      margin: 0;
+      background-color: #dcdcdc; /* light gray */
+      font-family: "IBM Plex Mono", monospace;
+      color: #000;
+    }
 
-.logo {
-    font-size: 26px;
-    letter-spacing: 6px;
-    font-weight: 600;
-}
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+    }
 
-.cart-icon {
-    font-size: 24px;
-    cursor: pointer;
-    position: relative;
-}
+    .logo {
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: 4px;
+      user-select: none;
+    }
 
-.cart-count {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    background: black;
-    color: white;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 50%;
-}
+    .cart-icon {
+      font-size: 28px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
 
-/* GRID */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 40px;
-    padding: 40px;
-    max-width: 1200px;
-    margin: auto;
-}
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      background: black;
+      color: white;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
 
-/* PRODUCT CARD */
-.card {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+    }
 
-.card:hover {
-    transform: scale(1.04);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-}
+    .product {
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      background: transparent; /* no background */
+      border-radius: 0;
+    }
 
-.card img {
-    width: 100%;
-    border-radius: 14px;
-}
+    .product:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      /* No background or border-radius here */
+    }
 
-.name {
-    margin-top: 14px;
-    font-size: 14px;
-    letter-spacing: 2px;
-}
+    .product img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0; /* No rounding */
+      transition: transform 0.25s ease;
+      max-width: 260px;
+      margin: 0 auto;
+      background: transparent;
+    }
 
-.price {
-    font-size: 13px;
-    margin-top: 6px;
-}
+    .product-title {
+      margin-top: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-size: 18px;
+      user-select: none;
+      background: transparent; /* No background */
+      display: inline-block;
+    }
 
-/* PRODUCT PAGE */
-.product {
-    max-width: 900px;
-    margin: auto;
-    padding: 40px;
-    text-align: center;
-}
+    /* Product Detail Page */
+    .product-detail {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      text-align: center;
+      user-select: none;
+    }
 
-.product img {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 20px;
-}
+    .product-detail img {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      pointer-events: none;
+      background: transparent;
+    }
 
-.sizes button {
-    margin: 8px;
-    padding: 12px 22px;
-    border: 1px solid black;
-    background: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
+    .product-detail h2 {
+      letter-spacing: 4px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
 
-.sizes button.active {
-    background: black;
-    color: white;
-}
+    .product-detail .price {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
 
-.add {
-    margin-top: 25px;
-    padding: 14px 50px;
-    background: black;
-    color: white;
-    border: none;
-    letter-spacing: 2px;
-    cursor: pointer;
-}
+    .sizes {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 30px;
+      user-select: none;
+    }
 
-/* CART */
-.cart {
-    max-width: 600px;
-    margin: auto;
-    padding: 40px;
-    text-align: center;
-}
+    .sizes button {
+      padding: 12px 28px;
+      border: 2px solid black;
+      background: none;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border-radius: 6px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 14px;
+    }
 
-.cart-item {
-    margin: 15px 0;
-    font-size: 14px;
-    letter-spacing: 1px;
-}
+    .sizes button.selected {
+      background: black;
+      color: white;
+    }
 
-.email {
-    margin-top: 30px;
-    font-weight: 600;
-}
+    .add-to-cart-btn {
+      padding: 14px 60px;
+      background: black;
+      color: white;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 3px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
 
-.clear {
-    margin-top: 20px;
-    padding: 10px 30px;
-    background: none;
-    border: 1px solid black;
-    cursor: pointer;
-}
+    .add-to-cart-btn:hover {
+      background: #333;
+    }
 
-/* BACK */
-.back {
-    margin-top: 30px;
-    cursor: pointer;
-    letter-spacing: 2px;
-    font-size: 13px;
-}
-</style>
+    /* Cart Page */
+    .cart-page {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      user-select: none;
+    }
+
+    .cart-page h2 {
+      letter-spacing: 4px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .cart-item {
+      font-size: 16px;
+      margin-bottom: 14px;
+      letter-spacing: 1.3px;
+    }
+
+    .contact-info {
+      margin-top: 40px;
+      font-weight: 600;
+      font-size: 15px;
+      text-align: center;
+      letter-spacing: 1.5px;
+    }
+
+    .clear-cart-btn {
+      margin-top: 30px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 12px 40px;
+      background: none;
+      border: 2px solid black;
+      border-radius: 6px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.25s ease;
+    }
+
+    .clear-cart-btn:hover {
+      background: black;
+      color: white;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      display: block;
+      text-align: center;
+      cursor: pointer;
+      font-family: "IBM Plex Mono", monospace;
+      letter-spacing: 2px;
+      font-size: 13px;
+      user-select: none;
+      color: black;
+    }
+
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
-
-<header>
+  <header>
     <div class="logo">AMS SUPPLY</div>
-    <div class="cart-icon" onclick="loadCart()">
-        🛒
-        <div class="cart-count" id="count">0</div>
+    <div class="cart-icon" onclick="showCart()">
+      🛒
+      <div class="cart-count" id="cartCount">0</div>
     </div>
-</header>
+  </header>
 
-<div id="app"></div>
+  <main id="mainContent">
+    <!-- Products grid will be generated by JS -->
+  </main>
 
-<script>
-const products = [
-    { id: 1, name: "AMS HOODIE 1", img: "hoodie1.jpg" },
-    { id: 2, name: "AMS HOODIE 2", img: "hoodie2.jpg" },
-    { id: 3, name: "AMS HOODIE 3", img: "hoodie3.jpg" },
-    { id: 4, name: "AMS HOODIE 4", img: "hoodie4.jpg" },
-    { id: 5, name: "AMS HOODIE 5", img: "hoodie5.jpg" },
-    { id: 6, name: "AMS HOODIE 6", img: "hoodie6.jpg" }
-];
+  <script>
+    const products = [
+      { id: 1, name: "HOODIE ONE", img: "hoodie1.jpg", price: 30 },
+      { id: 2, name: "HOODIE TWO", img: "hoodie2.jpg", price: 30 },
+      { id: 3, name: "HOODIE THREE", img: "hoodie3.jpg", price: 30 },
+      { id: 4, name: "HOODIE FOUR", img: "hoodie4.jpg", price: 30 },
+      { id: 5, name: "HOODIE FIVE", img: "hoodie5.jpg", price: 30 },
+      { id: 6, name: "HOODIE SIX", img: "hoodie6.jpg", price: 30 },
+    ];
 
-let cart = [];
-let selectedSize = null;
+    let cart = [];
+    let selectedSize = null;
+    let currentProductId = null;
 
-const app = document.getElementById("app");
-const count = document.getElementById("count");
+    const mainContent = document.getElementById("mainContent");
+    const cartCount = document.getElementById("cartCount");
 
-function updateCount() {
-    count.innerText = cart.length;
-}
+    function updateCartCount() {
+      cartCount.textContent = cart.length;
+    }
 
-/* HOME */
-function loadHome() {
-    let html = `<div class="grid">`;
+    function showProducts() {
+      selectedSize = null;
+      currentProductId = null;
+      let html = "";
 
-    products.forEach(p => {
+      products.forEach((p) => {
         html += `
-            <div class="card" onclick="loadProduct(${p.id})">
-                <img src="${p.img}">
-                <div class="name">${p.name}</div>
-                <div class="price">$30</div>
-            </div>
+          <div class="product" onclick="showProduct(${p.id})">
+            <img src="${p.img}" alt="${p.name}" />
+            <div class="product-title">${p.name}</div>
+          </div>
         `;
-    });
+      });
 
-    html += `</div>`;
-    app.innerHTML = html;
-}
+      mainContent.innerHTML = html;
+    }
 
-/* PRODUCT */
-function loadProduct(id) {
-    selectedSize = null;
-    const p = products.find(x => x.id === id);
+    function showProduct(id) {
+      selectedSize = null;
+      currentProductId = id;
+      const product = products.find((p) => p.id === id);
 
-    app.innerHTML = `
-        <div class="product">
-            <img src="${p.img}">
-            <h2>${p.name}</h2>
-            <p>$30</p>
+      mainContent.innerHTML = `
+        <div class="product-detail">
+          <img src="${product.img}" alt="${product.name}" />
+          <h2>${product.name}</h2>
+          <div class="price">$${product.price}</div>
 
-            <div class="sizes">
-                <button onclick="selectSize(this,'S')">S</button>
-                <button onclick="selectSize(this,'M')">M</button>
-                <button onclick="selectSize(this,'L')">L</button>
-                <button onclick="selectSize(this,'XL')">XL</button>
-            </div>
+          <div class="sizes">
+            <button onclick="selectSize(this, 'S')">S</button>
+            <button onclick="selectSize(this, 'M')">M</button>
+            <button onclick="selectSize(this, 'L')">L</button>
+            <button onclick="selectSize(this, 'XL')">XL</button>
+          </div>
 
-            <button class="add" onclick="addToCart('${p.name}')">
-                ADD TO CART
-            </button>
+          <button class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
 
-            <div class="back" onclick="loadHome()">← BACK</div>
+          <div class="back-btn" onclick="showProducts()">← BACK TO PRODUCTS</div>
         </div>
-    `;
-}
+      `;
+    }
 
-/* SIZE SELECT */
-function selectSize(btn, size) {
-    selectedSize = size;
-    document.querySelectorAll(".sizes button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-}
+    function selectSize(button, size) {
+      selectedSize = size;
+      // Remove selected class from all size buttons
+      document.querySelectorAll(".sizes button").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+      // Add selected class to clicked button
+      button.classList.add("selected");
+    }
 
-/* CART */
-function addToCart(name) {
-    if (!selectedSize) {
-        alert("Please select a size.");
+    function addToCart() {
+      if (!selectedSize) {
+        alert("Please select a size before adding to cart.");
         return;
+      }
+
+      const product = products.find((p) => p.id === currentProductId);
+      cart.push({ ...product, size: selectedSize });
+      updateCartCount();
+      alert(`${product.name} (Size ${selectedSize}) added to cart.`);
+      showProducts();
     }
 
-    cart.push({ name, size: selectedSize });
-    updateCount();
-}
+    function showCart() {
+      if (cart.length === 0) {
+        mainContent.innerHTML = `
+          <div class="cart-page">
+            <h2>CART</h2>
+            <p>Your cart is empty.</p>
+            <div class="contact-info">
+              Contact us at: amsfashion2025@gmail.com to order
+            </div>
+            <div class="back-btn" onclick="showProducts()">← BACK TO PRODUCTS</div>
+          </div>
+        `;
+        return;
+      }
 
-/* CART PAGE */
-function loadCart() {
-    let html = `<div class="cart"><h2>CART</h2>`;
+      let html = `
+        <div class="cart-page">
+          <h2>CART</h2>
+      `;
 
-    if (cart.length === 0) {
-        html += `<p>Your cart is empty.</p>`;
-    } else {
-        cart.forEach(item => {
-            html += `<div class="cart-item">${item.name} — Size ${item.size} — $30</div>`;
-        });
-    }
+      cart.forEach((item, i) => {
+        html += `<div class="cart-item">${item.name} — Size ${item.size} — $${item.price}</div>`;
+      });
 
-    html += `
-        <div class="email">
-            Contact us at:<br>
-            amsfashion2025@gmail.com
+      html += `
+        <button class="clear-cart-btn" onclick="clearCart()">CLEAR CART</button>
+
+        <div class="contact-info">
+          Contact us at: amsfashion2025@gmail.com to order
         </div>
 
-        <button class="clear" onclick="clearCart()">CLEAR CART</button>
+        <div class="back-btn" onclick="showProducts()">← BACK TO PRODUCTS</div>
+      </div>`;
 
-        <div class="back" onclick="loadHome()">← BACK TO SHOP</div>
-    </div>`;
+      mainContent.innerHTML = html;
+    }
 
-    app.innerHTML = html;
-}
+    function clearCart() {
+      if (confirm("Are you sure you want to clear your cart?")) {
+        cart = [];
+        updateCartCount();
+        showCart();
+      }
+    }
 
-/* CLEAR CART */
-function clearCart() {
-    cart = [];
-    updateCount();
-    loadCart();
-}
-
-loadHome();
-</script>
-
+    // Initialize
+    updateCartCount();
+    showProducts();
+  </script>
 </body>
 </html>
