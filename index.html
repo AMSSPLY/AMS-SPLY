@@ -1,441 +1,399 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AMS SUPPLY</title>
-<style>
-  @font-face {
-    font-family: 'VCR OSD Mono';
-    src: url('VCR_OSD_Mono.woff2') format('woff2'),
-         url('VCR_OSD_Mono.woff') format('woff'),
-         url('VCR_OSD_Mono.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AMS SUPPLY</title>
 
-  body {
-    margin: 0;
-    background-color: #f5f5f5; /* very light gray */
-    font-family: 'VCR OSD Mono', monospace;
-    color: #a0a0a0; /* lighter gray text */
-  }
+  <style>
+    /* Load local VCR OSD Mono font */
+    @font-face {
+      font-family: 'VCR OSD Mono';
+      src: url('fonts/VCR_OSD_MONO.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
 
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background: #f5f5f5; /* same as body bg to remove white bar */
-    box-shadow: none; /* remove shadow */
-    border-bottom: none; /* remove border */
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    user-select: none;
-  }
+    body {
+      margin: 0;
+      background-color: #f7f7f7; /* lighter gray background */
+      font-family: 'VCR OSD Mono', monospace;
+      color: #a0a0a0; /* darker gray text */
+    }
 
-  .cart-icon {
-    font-size: 1.7rem;
-    cursor: pointer;
-    position: relative;
-    user-select: none;
-  }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+    }
 
-  #cart-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #a0a0a0;
-    color: #f5f5f5;
-    font-size: 0.75rem;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    .logo {
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: 4px;
+      user-select: none;
+    }
 
-  main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-  }
+    .cart-icon {
+      font-size: 28px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
 
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-    gap: 2rem;
-  }
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      background: black;
+      color: white;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
 
-  .product-card {
-    cursor: pointer;
-    text-align: center;
-    transition: transform 0.3s ease;
-    color: #a0a0a0;
-  }
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+    }
 
-  .product-card:hover {
-    transform: scale(1.05);
-  }
+    .product {
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      background: transparent;
+      border-radius: 0;
+    }
 
-  .product-image {
-    width: 100%;
-    max-width: 250px;
-    margin: 0 auto 0.5rem;
-  }
+    .product:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
 
-  .product-image img {
-    max-width: 100%;
-    border-radius: 16px;
-    box-shadow: 0 0 12px rgba(255 255 255 / 0.7);
-    background: transparent;
-  }
+    .product img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0;
+      transition: transform 0.25s ease;
+      max-width: 260px;
+      margin: 0 auto;
+      background: transparent;
+    }
 
-  .product-title {
-    font-size: 1.3rem;
-    margin: 0.25rem 0;
-    user-select: none;
-    background: transparent !important;
-  }
+    .product-title {
+      margin-top: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-size: 18px;
+      user-select: none;
+      background: transparent;
+      display: inline-block;
+    }
 
-  #product-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1500;
-  }
+    .product-detail {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      text-align: center;
+      user-select: none;
+    }
 
-  #product-modal.active {
-    display: flex;
-  }
+    .product-detail img {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      pointer-events: none;
+      background: transparent;
+    }
 
-  #modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    max-width: 450px;
-    width: 90%;
-    font-size: 1rem;
-    color: #a0a0a0;
-    font-family: 'VCR OSD Mono', monospace;
-  }
+    .product-detail h2 {
+      letter-spacing: 4px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
 
-  #modal-content img {
-    width: 100%;
-    border-radius: 12px;
-    margin-bottom: 1rem;
-  }
+    .product-detail .price {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
 
-  #modal-content h2 {
-    margin: 0 0 1rem 0;
-    font-size: 1.6rem;
-    color: #a0a0a0;
-  }
+    .sizes {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 30px;
+      user-select: none;
+    }
 
-  .sizes {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
+    .sizes button {
+      padding: 12px 28px;
+      border: 2px solid #a0a0a0;
+      background: none;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border-radius: 6px;
+      font-family: 'VCR OSD Mono', monospace;
+      font-size: 14px;
+      color: #a0a0a0;
+    }
 
-  .size-option {
-    flex: 1;
-    padding: 0.5rem 0;
-    border: 2px solid #a0a0a0;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s, color 0.3s;
-    color: #a0a0a0;
-  }
+    .sizes button.selected {
+      background: #a0a0a0;
+      color: #f7f7f7;
+      border-color: #a0a0a0;
+    }
 
-  .size-option.selected {
-    background-color: #a0a0a0;
-    color: #f5f5f5;
-  }
+    .add-to-cart-btn {
+      padding: 14px 60px;
+      background: #a0a0a0;
+      color: #f7f7f7;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 3px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: background 0.3s ease;
+      font-family: 'VCR OSD Mono', monospace;
+    }
 
-  button#add-to-cart {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    background-color: #a0a0a0;
-    border: none;
-    color: white;
-    font-size: 1.1rem;
-    cursor: pointer;
-    border-radius: 8px;
-    user-select: none;
-    transition: background-color 0.3s;
-  }
+    .add-to-cart-btn:hover {
+      background: #858585;
+    }
 
-  button#add-to-cart:hover {
-    background-color: #888;
-  }
+    .cart-page {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      user-select: none;
+    }
 
-  #cart-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: white;
-    z-index: 2000;
-    overflow-y: auto;
-    transform: translateX(100%);
-    transition: transform 0.4s ease;
-    display: flex;
-    flex-direction: column;
-  }
+    .cart-page h2 {
+      letter-spacing: 4px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
 
-  #cart-page.open {
-    transform: translateX(0);
-  }
+    .cart-item {
+      font-size: 16px;
+      margin-bottom: 14px;
+      letter-spacing: 1.3px;
+    }
 
-  #cart-page header {
-    padding: 1rem 2rem;
-    font-weight: bold;
-    font-size: 1.4rem;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #a0a0a0;
-  }
+    .contact-info {
+      margin-top: 40px;
+      font-weight: 600;
+      font-size: 15px;
+      text-align: center;
+      letter-spacing: 1.5px;
+    }
 
-  #cart-page .close-btn {
-    cursor: pointer;
-    font-size: 2rem;
-    user-select: none;
-  }
+    .clear-cart-btn {
+      margin-top: 30px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 12px 40px;
+      background: none;
+      border: 2px solid #a0a0a0;
+      border-radius: 6px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-family: 'VCR OSD Mono', monospace;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.25s ease;
+      color: #a0a0a0;
+    }
 
-  #cart-items {
-    flex: 1;
-    padding: 1rem 2rem;
-    font-family: 'VCR OSD Mono', monospace;
-    color: #a0a0a0;
-  }
+    .clear-cart-btn:hover {
+      background: #a0a0a0;
+      color: #f7f7f7;
+      border-color: #a0a0a0;
+    }
 
-  .cart-item {
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
-  }
+    .back-btn {
+      margin-top: 30px;
+      display: block;
+      text-align: center;
+      cursor: pointer;
+      font-family: 'VCR OSD Mono', monospace;
+      letter-spacing: 2px;
+      font-size: 13px;
+      user-select: none;
+      color: #a0a0a0;
+    }
 
-  .cart-item p {
-    margin: 0.25rem 0;
-  }
-
-  #cart-footer {
-    padding: 1rem 2rem;
-    border-top: 1px solid #ddd;
-    font-size: 1rem;
-    font-family: 'VCR OSD Mono', monospace;
-    color: #a0a0a0;
-  }
-
-  #clear-cart {
-    background: #e63946;
-    border: none;
-    color: white;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    user-select: none;
-    margin-top: 0.5rem;
-    width: 100%;
-    font-weight: bold;
-    font-family: 'VCR OSD Mono', monospace;
-  }
-
-  #clear-cart:hover {
-    background: #d62828;
-  }
-</style>
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
+
 <body>
-
-<header>
-  <div class="logo">AMS SUPPLY</div>
-  <div class="cart-icon" id="cart-icon" title="View Cart">🛒<div id="cart-count" style="display:none;">0</div></div>
-</header>
-
-<main>
-  <div class="products-grid" id="products-grid"></div>
-</main>
-
-<div id="product-modal">
-  <div id="modal-content">
-    <h2 id="modal-title"></h2>
-    <img id="modal-image" src="" alt="" />
-    <div class="sizes" id="size-options"></div>
-    <p>Price: $30</p>
-    <button id="add-to-cart" disabled>Add to Cart</button>
-  </div>
-</div>
-
-<div id="cart-page" aria-hidden="true">
   <header>
-    Your Cart
-    <span class="close-btn" id="close-cart">&times;</span>
+    <div class="logo">AMS SUPPLY</div>
+    <div class="cart-icon" onclick="showCart()">
+      🛒
+      <div class="cart-count" id="cartCount">0</div>
+    </div>
   </header>
-  <div id="cart-items">Your cart is empty.</div>
-  <div id="cart-footer">
-    <div>Contact: amsfashion2025@gmail.com to order</div>
-    <button id="clear-cart">Clear Cart</button>
-  </div>
-</div>
 
-<script>
-  const products = [
-    { id: 'HD-01', title: 'HD-01', image: 'hoodie1.jpg', price: 30 },
-    { id: 'HD-02', title: 'HD-02', image: 'hoodie2.jpg', price: 30 },
-    { id: 'HD-03', title: 'HD-03', image: 'hoodie3.jpg', price: 30 },
-    { id: 'HD-04', title: 'HD-04', image: 'hoodie4.jpg', price: 30 },
-    { id: 'HD-05', title: 'HD-05', image: 'hoodie5.jpg', price: 30 },
-    { id: 'HD-06', title: 'HD-06', image: 'hoodie6.jpg', price: 30 }
-  ];
+  <main id="mainContent">
+    <!-- Products grid will be generated by JS -->
+  </main>
 
-  const sizes = ['S', 'M', 'L', 'XL'];
+  <script>
+    const products = [
+      { id: 1, name: "HD-01", img: "hoodie1.jpg", price: 30 },
+      { id: 2, name: "HD-02", img: "hoodie2.jpg", price: 30 },
+      { id: 3, name: "HD-03", img: "hoodie3.jpg", price: 30 },
+      { id: 4, name: "HD-04", img: "hoodie4.jpg", price: 30 },
+      { id: 5, name: "HD-05", img: "hoodie5.jpg", price: 30 },
+      { id: 6, name: "HD-06", img: "hoodie6.jpg", price: 30 },
+    ];
 
-  const productsGrid = document.getElementById('products-grid');
-  const productModal = document.getElementById('product-modal');
-  const modalTitle = document.getElementById('modal-title');
-  const modalImage = document.getElementById('modal-image');
-  const sizeOptions = document.getElementById('size-options');
-  const addToCartBtn = document.getElementById('add-to-cart');
-  const cartIcon = document.getElementById('cart-icon');
-  const cartCount = document.getElementById('cart-count');
-  const cartPage = document.getElementById('cart-page');
-  const closeCartBtn = document.getElementById('close-cart');
-  const cartItemsContainer = document.getElementById('cart-items');
-  const clearCartBtn = document.getElementById('clear-cart');
+    let cart = [];
+    let selectedSize = null;
+    let currentProductId = null;
 
-  let selectedProduct = null;
-  let selectedSize = null;
-  let cart = [];
+    const mainContent = document.getElementById("mainContent");
+    const cartCount = document.getElementById("cartCount");
 
-  function renderProducts() {
-    productsGrid.innerHTML = '';
-    products.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.innerHTML = `
-        <div class="product-image"><img src="${p.image}" alt="${p.title}" loading="lazy" /></div>
-        <div class="product-title">${p.title}</div>
-      `;
-      card.onclick = () => openModal(p);
-      productsGrid.appendChild(card);
-    });
-  }
-
-  function openModal(product) {
-    selectedProduct = product;
-    selectedSize = null;
-    modalTitle.textContent = product.title;
-    modalImage.src = product.image;
-    addToCartBtn.disabled = true;
-
-    sizeOptions.innerHTML = '';
-    sizes.forEach(size => {
-      const sizeDiv = document.createElement('div');
-      sizeDiv.className = 'size-option';
-      sizeDiv.textContent = size;
-      sizeDiv.onclick = () => {
-        selectedSize = size;
-        updateSelectedSize();
-        addToCartBtn.disabled = false;
-      };
-      sizeOptions.appendChild(sizeDiv);
-    });
-
-    productModal.classList.add('active');
-  }
-
-  function updateSelectedSize() {
-    const sizeDivs = sizeOptions.querySelectorAll('.size-option');
-    sizeDivs.forEach(div => {
-      div.classList.toggle('selected', div.textContent === selectedSize);
-    });
-  }
-
-  addToCartBtn.onclick = () => {
-    if (!selectedProduct || !selectedSize) return;
-    cart.push({
-      id: selectedProduct.id,
-      title: selectedProduct.title,
-      size: selectedSize,
-      price: selectedProduct.price
-    });
-    updateCartCount();
-    productModal.classList.remove('active');
-  };
-
-  function updateCartCount() {
-    if (cart.length > 0) {
-      cartCount.style.display = 'flex';
+    function updateCartCount() {
       cartCount.textContent = cart.length;
-    } else {
-      cartCount.style.display = 'none';
     }
-  }
 
-  cartIcon.onclick = () => {
-    renderCart();
-    cartPage.classList.add('open');
-    cartPage.setAttribute('aria-hidden', 'false');
-  };
+    function showProducts() {
+      selectedSize = null;
+      currentProductId = null;
+      let html = "";
 
-  closeCartBtn.onclick = () => {
-    cartPage.classList.remove('open');
-    cartPage.setAttribute('aria-hidden', 'true');
-  };
+      products.forEach((p) => {
+        html += `
+          <div class="product" onclick="showProduct(${p.id})">
+            <img src="${p.img}" alt="${p.name}" />
+            <div class="product-title">${p.name}</div>
+          </div>
+        `;
+      });
 
-  function renderCart() {
-    cartItemsContainer.innerHTML = '';
-    if (cart.length === 0) {
-      cartItemsContainer.textContent = 'Your cart is empty.';
-      return;
+      mainContent.innerHTML = html;
     }
-    cart.forEach(item => {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'cart-item';
-      itemDiv.innerHTML = `
-        <p><strong>${item.title}</strong></p>
-        <p>Size: ${item.size}</p>
-        <p>Price: $${item.price}</p>
+
+    function showProduct(id) {
+      selectedSize = null;
+      currentProductId = id;
+      const product = products.find((p) => p.id === id);
+
+      mainContent.innerHTML = `
+        <div class="product-detail">
+          <img src="${product.img}" alt="${product.name}" />
+          <h2>${product.name}</h2>
+          <div class="price">$${product.price}</div>
+
+          <div class="sizes">
+            <button onclick="selectSize(this, 'S')">S</button>
+            <button onclick="selectSize(this, 'M')">M</button>
+            <button onclick="selectSize(this, 'L')">L</button>
+            <button onclick="selectSize(this, 'XL')">XL</button>
+          </div>
+
+          <button class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
+
+          <div class="back-btn" onclick="showProducts()">← BACK TO PRODUCTS</div>
+        </div>
       `;
-      cartItemsContainer.appendChild(itemDiv);
-    });
-  }
-
-  clearCartBtn.onclick = () => {
-    cart = [];
-    updateCartCount();
-    renderCart();
-  };
-
-  productModal.onclick = e => {
-    if (e.target === productModal) {
-      productModal.classList.remove('active');
     }
-  };
 
-  renderProducts();
-  updateCartCount();
-</script>
+    function selectSize(button, size) {
+      selectedSize = size;
+      // Remove selected class from all size buttons
+      document.querySelectorAll(".sizes button").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+      // Add selected class to clicked button
+      button.classList.add("selected");
+    }
 
+    function addToCart() {
+      if (!selectedSize) {
+        alert("Please select a size before adding to cart.");
+        return;
+      }
+
+      const product = products.find((p) => p.id === currentProductId);
+      cart.push({ ...product, size: selectedSize });
+      updateCartCount();
+      alert(`${product.name} (Size ${selectedSize}) added to cart.`);
+      showProducts();
+    }
+
+    function showCart() {
+      if (cart.length === 0) {
+        mainContent.innerHTML = `
+          <div class="cart-page">
+            <h2>CART</h2>
+            <p>Your cart is empty.</p>
+            <div class="contact-info">
+              Contact us at: amsfashion2025@gmail.com to order
+            </div>
+            <div class="back-btn" onclick="showProducts()">← BACK TO PRODUCTS</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="cart-page">
+          <h2>CART</h2>
+      `;
+
+      cart.forEach((item, i) => {
+        html += `<div class="cart-item">${item.name} — Size ${item.size} — $${item.price}</div>`;
+      });
+
+      html += `
+        <button class="clear-cart-btn" onclick="clearCart()">CLEAR CART</button>
+
+        <div class="contact-info">
+          Contact us at: amsfashion2025@gmail.com to order
+        </div>
+
+        <div class="back-btn" onclick="showProducts()">← BACK TO PRODUCTS</div>
+      </div>`;
+
+      mainContent.innerHTML = html;
+    }
+
+    function clearCart() {
+      if (confirm("Are you sure you want to clear your cart?")) {
+        cart = [];
+        updateCartCount();
+        showCart();
+      }
+    }
+
+    // Initialize
+    updateCartCount();
+    showProducts();
+  </script>
 </body>
 </html>
