@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AMS SUPPLY</title>
+
+<style>
+@font-face {
+  font-family: "VCR OSD Mono";
+  src: url("VCR_OSD_MONO.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: #000;
+  font-family: "VCR OSD Mono", monospace;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+header h1 {
+  font-size: 3rem;
+  letter-spacing: 0.35em;
+}
+
+/* PRODUCT GRID */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  border: 2px solid #000;
+  padding: 1rem;
+  text-align: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 320px;
+  margin-bottom: 1rem;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-image.dual {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-image.dual img {
+  width: 50%;
+}
+
+.product-name {
+  font-size: 1.4rem;
+  letter-spacing: 0.15em;
+}
+
+.product-price {
+  margin: 0.5rem 0 1rem;
+}
+
+/* SIZES */
+.size-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.size-buttons button {
+  background: #fff;
+  border: 1px solid #000;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+}
+
+.size-buttons button.active {
+  background: #000;
+  color: #fff;
+}
+
+/* BUTTON */
+.buy-btn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+  letter-spacing: 0.15em;
+}
+
+/* COMING SOON */
+.coming-soon {
+  text-align: center;
+  padding: 5rem 2rem;
+}
+
+.coming-soon h2 {
+  font-size: 4.5rem;
+  letter-spacing: 0.4em;
+  margin: 0;
+}
+
+.coming-soon p {
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  opacity: 0.75;
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+/* HD-07 */
+.hd07 {
+  max-width: 1200px;
+  margin: 0 auto 6rem;
+  padding: 2rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<header>
+  <h1>AMS SUPPLY</h1>
+</header>
+
+<main class="product-grid">
+
+<!-- HD 01–06 -->
+<script>
+const products = ["01","02","03","04","05","06"];
+</script>
+
+<div class="product-card" data-product="HD-01" data-price="30">
+  <div class="product-image"><img src="hd-01.jpg"></div>
+  <div class="product-name">HD – 01</div>
+  <div class="product-price">$30</div>
+  <div class="size-buttons"><button>S</button><button>M</button><button>L</button><button>XL</button></div>
+  <button class="buy-btn">BUY</button>
+</div>
+
+<div class="product-card" data-product="HD-02" data-price="30">
+  <div class="product-image"><img src="hd-02.jpg"></div>
+  <div class="product-name">HD – 02</div>
+  <div class="product-price">$30</div>
+  <div class="size-buttons"><button>S</button><button>M</button><button>L</button><button>XL</button></div>
+  <button class="buy-btn">BUY</button>
+</div>
+
+<div class="product-card" data-product="HD-03" data-price="30">
+  <div class="product-image"><img src="hd-03.jpg"></div>
+  <div class="product-name">HD – 03</div>
+  <div class="product-price">$30</div>
+  <div class="size-buttons"><button>S</button><button>M</button><button>L</button><button>XL</button></div>
+  <button class="buy-btn">BUY</button>
+</div>
+
+<div class="product-card" data-product="HD-04" data-price="30">
+  <div class="product-image"><img src="hd-04.jpg"></div>
+  <div class="product-name">HD – 04</div>
+  <div class="product-price">$30</div>
+  <div class="size-buttons"><button>S</button><button>M</button><button>L</button><button>XL</button></div>
+  <button class="buy-btn">BUY</button>
+</div>
+
+<div class="product-card" data-product="HD-05" data-price="30">
+  <div class="product-image"><img src="hd-05.jpg"></div>
+  <div class="product-name">HD – 05</div>
+  <div class="product-price">$30</div>
+  <div class="size-buttons"><button>S</button><button>M</button><button>L</button><button>XL</button></div>
+  <button class="buy-btn">BUY</button>
+</div>
+
+<div class="product-card" data-product="HD-06" data-price="30">
+  <div class="product-image"><img src="hd-06.jpg"></div>
+  <div class="product-name">HD – 06</div>
+  <div class="product-price">$30</div>
+  <div class="size-buttons"><button>S</button><button>M</button><button>L</button><button>XL</button></div>
+  <button class="buy-btn">BUY</button>
+</div>
+
+</main>
+</div>
+
+<section class="coming-soon">
+  <h2>COMING SOON</h2>
+  <p>Coming March 5 2026</p>
+</section>
+
+<div class="hd07">
+  <div class="product-card" data-product="HD-07" data-price="65">
+    <div class="product-image dual">
+      <img src="hd-07-front.jpg">
+      <img src="hd-07-back.jpg">
+    </div>
+    <div class="product-name">HD – 07</div>
+    <div class="product-price">$65</div>
+    <button class="buy-btn">PRE-ORDER</button>
+  </div>
+</div>
+
+<script>
+let selectedSize = null;
+
+document.querySelectorAll('.size-buttons button').forEach(btn => {
+  btn.onclick = () => {
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSize = btn.textContent;
+  };
+});
+
+document.querySelectorAll('.buy-btn').forEach(btn => {
+  btn.onclick = () => {
+    const card = btn.closest('.product-card');
+    const product = card.dataset.product;
+    const price = card.dataset.price;
+
+    if (product === "HD-07") {
+      location.href =
+        `mailto:amsfashion2025@gmail.com?subject=Pre-order HD-07&body=I would like to pre-order HD-07 for $${price}.`;
+      return;
+    }
+
+    if (!selectedSize) {
+      alert("Select a size");
+      return;
+    }
+
+    location.href =
+      `mailto:amsfashion2025@gmail.com?subject=Order ${product}&body=Product: ${product}%0ASize: ${selectedSize}%0APrice: $${price}`;
+  };
+});
+</script>
+
+</body>
+</html>
